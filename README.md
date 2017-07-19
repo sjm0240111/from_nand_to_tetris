@@ -1,2 +1,2 @@
-# test_of_R
-this is a test of R 
+# This is a description of project for course "nand to tetris"
+
