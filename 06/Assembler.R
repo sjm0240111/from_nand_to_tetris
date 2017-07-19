@@ -1,3 +1,5 @@
+# first you need to setwd to source file location.
+load("assembletable.RData")
 Assembler <- function(fname) {
     library(stringr)
     fhand <- file(fname)
