@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Jul 17 22:28:48 2017
-
 @author: John Lee
 """
 import os
@@ -20,14 +19,14 @@ def main(fname):
         filelist = set()
         for file in os.listdir():                         # get all vm files
             if file.split(sep='.')[-1] == 'vm':
-                pathedfile = os.path.join(fname, file))
+                pathedfile = os.path.join(fname, file)
                 filelist.add(pathedfile)
         if len(filelist) == 0:
             print('no vm file exist')
             exit()
         if len(filelist) == 1:                        # one file in dir
             fhand = openfile(pathedfile)
-            fout = open(re.sub(r.'.vm','.asm',pathedfile),'w')
+            fout = open(re.sub(r'.vm','.asm',pathedfile),'w')
             throughfile(fhand,fout)
             fout.close()
         else:                                           # multiple files
@@ -59,30 +58,35 @@ def throughfile(resource,resultfile):
             line = re.sub(r'//(.*)','',line)
         line = line.strip()
         if len(line) ==0:
+            linecount += 1
             continue
         if line in alcmd:
             lasm = alcmd.get(line)
-            lineasm = lasm.format(linecount)
+            lineasm = lasm.format(fun,linecount)
         else:
             words = line.split(sep=' ')
-            if words[0] in funcmd:
-                if words[0] == 'call':
-                    fun = words[1]
-                    lasm = funcmd.get(words[0])
-                    lineasm = lasm.format(words[1],words[2])
+            if words[0] == 'call': 
+                lasm = funcmd.get(words[0])
+                lineasm = lasm.format(words[1], words[2], linecount)
+            elif words[0] == 'return':
+                lineasm = funcmd.get(words[0])
+            elif words[0] == 'function':
+                fun = words[1]
+                lasm = funcmd.get(words[0])
+                lineasm = lasm.format(words[1], words[2])
             elif words[0] == 'push':
                 lasm = pushcmd.get(words[1])
-                return lasm.format(words[2])
+                return lasm.format(words[2],resource.name)
             elif words[0] == 'pop':
                 lasm = popcmd.get(words[1])
-                return lasm.format(words[2]) 
+                return lasm.format(words[2],resource.name) 
             elif words[0] in branchcmd:
                 lasm = branchcmd.get(words[0])
                 return lasm.format(words[1])
             else:
-                print('invalid vm command in line {0}'.format(linecount))
+                print('invalid vm command in file {}, line {0}'.format(resource.name, linecount))
         resultfile.writelines(lineasm)
-        linecount = linecount + 1    
+        linecount += 1   
 
 print(funcmd['function'])
 #main(sys.argv[1])

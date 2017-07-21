@@ -6,29 +6,28 @@ Spyder Editor
 """
 
 pushcmd = dict()
-pushcmd['local']='@{}\nD=A\n@R1\nA=M\nA=D+A\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'
-pushcmd['argument']='@{}\nD=A\n@R2\nA=M\nA=D+A\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'
-pushcmd['this']='@{}\nD=A\n@R3\nA=M\nA=D+A\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'
-pushcmd['that']='@{}\nD=A\n@R4\nA=M\nA=D+A\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'
-pushcmd['temp']='@{}\nD=A\n@5\nA=D+A\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'
-pushcmd['static']='@{}\nD=A\n@16\nA=D+A\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'
-pushcmd['pointer']='@{}\nD=A\n@R3\nA=D+A\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'
-pushcmd['constant']='@{}\nD=A\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'
+pushcmd['local']='@{0}\nD=A\n@R1\nA=M\nA=D+A\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'
+pushcmd['argument']='@{0}\nD=A\n@R2\nA=M\nA=D+A\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'
+pushcmd['this']='@{0}\nD=A\n@R3\nA=M\nA=D+A\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'
+pushcmd['that']='@{0}\nD=A\n@R4\nA=M\nA=D+A\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'
+pushcmd['temp']='@{0}\nD=A\n@5\nA=D+A\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'
+pushcmd['static']='@@{1}.{0}\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'
+pushcmd['pointer']='@{0}\nD=A\n@R3\nA=D+A\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'
+pushcmd['constant']='@{0}\nD=A\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'
 
 popcmd = dict()
-popcmd['local'] = '@{}\nD=A\n@R1\nD=D+M\n@R13\nM=D\n@R0\nM=M-1\nA=M\nD=M\n'\
+popcmd['local'] = '@{0}\nD=A\n@R1\nD=D+M\n@R13\nM=D\n@R0\nM=M-1\nA=M\nD=M\n'\
 +'@R13\nA=M\nM=D\n'
-popcmd['argument'] = '@{}\nD=A\n@R2\nD=D+M\n@R13\nM=D\n@R0\nM=M-1\nA=M\nD=M\n'\
+popcmd['argument'] = '@{0}\nD=A\n@R2\nD=D+M\n@R13\nM=D\n@R0\nM=M-1\nA=M\nD=M\n'\
 +'@R13\nA=M\nM=D\n'
-popcmd['this'] = '@{}\nD=A\n@R3\nD=D+M\n@R13\nM=D\n@R0\nM=M-1\nA=M\nD=M\n'\
+popcmd['this'] = '@{0}\nD=A\n@R3\nD=D+M\n@R13\nM=D\n@R0\nM=M-1\nA=M\nD=M\n'\
 +'@R13\nA=M\nM=D\n'
-popcmd['that'] = '@{}\nD=A\n@R4\nD=D+M\n@R13\nM=D\n@R0\nM=M-1\nA=M\nD=M\n'\
+popcmd['that'] = '@{0}\nD=A\n@R4\nD=D+M\n@R13\nM=D\n@R0\nM=M-1\nA=M\nD=M\n'\
 +'@R13\nA=M\nM=D\n'
-popcmd['temp'] = '@{}\nD=A\n@5\nD=D+A\n@R13\nM=D\n@R0\nM=M-1\nA=M\nD=M\n'\
+popcmd['temp'] = '@{0}\nD=A\n@5\nD=D+A\n@R13\nM=D\n@R0\nM=M-1\nA=M\nD=M\n'\
 +'@R13\nA=M\nM=D\n'
-popcmd['static'] = '@{}\nD=A\n@16\nD=D+A\n@R13\nM=D\n@R0\nM=M-1\nA=M\nD=M\n'\
-+'@R13\nA=M\nM=D\n'
-popcmd['pointer'] = '@{}\nD=A\n@R3\nD=D+A\n@R13\nM=D\n@R0\nM=M-1\nA=M\nD=M\n'\
+popcmd['static'] = '@R0\nM=M-1\nA=M\nD=M\n@{1}.{0}\nM=D\n'\
+popcmd['pointer'] = '@{0}\nD=A\n@R3\nD=D+A\n@R13\nM=D\n@R0\nM=M-1\nA=M\nD=M\n'\
 +'@R13\nA=M\nM=D\n'
     
 alcmd = dict()
@@ -38,26 +37,26 @@ alcmd['neg'] = '@R0\nA=M\nA=A-1\nM=-M\n'
 alcmd['and'] = '@R0\nM=M-1\nA=M\nD=M\nA=A-1\nM=D&M\n'
 alcmd['or'] = '@R0\nM=M-1\nA=M\nD=M\nA=A-1\nM=D|M\n'
 alcmd['not'] = '@R0\nA=M\nA=A-1\nM=!M\n'
-alcmd['eq'] = '@R0\nM=M-1\nA=M\nD=M\nA=A-1\nD=M-D\nM=-1\n@EQ.{0}\n'\
-+'D;JEQ\n@R0\nA=M\nA=A-1\nM=0\n(EQ.{0})\n'
-alcmd['gt'] = '@R0\nM=M-1\nA=M\nD=M\nA=A-1\nD=M-D\nM=-1\n@GT.{0}\n'\
-+'D;JGT\n@R0\nA=M\nA=A-1\nM=0\n(GT.{0})\n'
-alcmd['lt'] = '@R0\nM=M-1\nA=M\nD=M\nA=A-1\nD=M-D\nM=-1\n@LT.{0}\n'\
-+'D;JLT\n@R0\nA=M\nA=A-1\nM=0\n(LT.{0})\n'
+alcmd['eq'] = '@R0\nM=M-1\nA=M\nD=M\nA=A-1\nD=M-D\nM=-1\n@EQ.{0}.{1}\n'\
++'D;JEQ\n@R0\nA=M\nA=A-1\nM=0\n(EQ.{0}.{1})\n'
+alcmd['gt'] = '@R0\nM=M-1\nA=M\nD=M\nA=A-1\nD=M-D\nM=-1\n@GT.{0}.{1}\n'\
++'D;JGT\n@R0\nA=M\nA=A-1\nM=0\n(GT.{0}.{1})\n'
+alcmd['lt'] = '@R0\nM=M-1\nA=M\nD=M\nA=A-1\nD=M-D\nM=-1\n@LT.{0}.{1}\n'\
++'D;JLT\n@R0\nA=M\nA=A-1\nM=0\n(LT.{0}.{1})\n'
 
 branchcmd = dict()
-branchcmd['label'] = '({})\n'
-branchcmd['goto'] = '@{}\n0;JMP\n'
-branchcmd['if-goto'] ='@R0\nM=M-1\nA=M\nD=M\n@{}\nD;JNE\n'
+branchcmd['label'] = '({0}${1})\n'
+branchcmd['goto'] = '@{0}${1}\n0;JMP\n'
+branchcmd['if-goto'] ='@R0\nM=M-1\nA=M\nD=M\n@{0}${1}\nD;JNE\n'
 
 funcmd = dict()
-funcmd['call'] = '@{}\nD=A\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'\
+funcmd['call'] = '@ret.{0}.{2}\nD=A\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'\
 +'@R1\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'\
 +'@R2\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'\
 +'@R3\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'\
 +'@R4\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'\
-+'@{0}\nD=A\n@5\nD=D+A\n@R0\nD=M-D\n@R2\nM=D\n'\
-+'@R0\nD=M\n@R1\nM=D\n@{1}\n0;JMP\n({})'
++'@{1}\nD=A\n@5\nD=D+A\n@R0\nD=M-D\n@R2\nM=D\n'\
++'@R0\nD=M\n@R1\nM=D\n@{0}\n0;JMP\n(ret.{0}.{2})'
 
 #push return-address // (Using the label declared below)
 #push LCL // Save LCL of the calling function
