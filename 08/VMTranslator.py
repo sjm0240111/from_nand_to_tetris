@@ -13,14 +13,16 @@ def main(fname):
         nameasm = re.sub(r'.vm','.asm',fname)
         fout = open(nameasm, 'w')
         fhand = openfile(fname)
-        throughfile(fhand,fout)
+        throughfile(fhand,fout)       
         fout.close()
+        print(fout.name)
     elif os.path.isdir(fname):                       # one directory        
-        filelist = set()
-        for file in os.listdir():                         # get all vm files
+        filelist = list()
+        for file in os.listdir(fname):                         # get all vm files
             if file.split(sep='.')[-1] == 'vm':
                 pathedfile = os.path.join(fname, file)
-                filelist.add(pathedfile)
+                filelist.append(pathedfile)
+        print(filelist)
         if len(filelist) == 0:
             print('no vm file exist')
             exit()
@@ -32,13 +34,15 @@ def main(fname):
         else:                                           # multiple files
             nameasm = fname.split(sep='/')[-1]+'.asm'
             nameasm = os.path.join(fname,nameasm)
-            fout = open(nameasm)
+            fout = open(nameasm,'w')
             fout.writelines('@256\nD=A\n@R0\nM=D\n')
-            fout.writelines(funcmd['call'].format('Sys.init','0'))
+            fout.writelines('@Sys.init\n0;JMP\n')
+            #fout.writelines(funcmd['call'].format('Sys.init','0','0'))
             for pf in filelist:
                 fhand = openfile(pf)
                 throughfile(fhand,fout)
-            fout.close()
+        fout.close()
+        fhand.close()
     else:
         print('no such file or directory')
             
@@ -53,6 +57,7 @@ def openfile(file):
 def throughfile(resource,resultfile):
     linecount = 1
     fun = ''
+    classname = os.path.splitext(resource.name)[1]
     for line in resource:
         if '//' in line:
             line = re.sub(r'//(.*)','',line)
@@ -76,17 +81,18 @@ def throughfile(resource,resultfile):
                 lineasm = lasm.format(words[1], words[2])
             elif words[0] == 'push':
                 lasm = pushcmd.get(words[1])
-                return lasm.format(words[2],resource.name)
+                lineasm = lasm.format(words[2], classname)
             elif words[0] == 'pop':
                 lasm = popcmd.get(words[1])
-                return lasm.format(words[2],resource.name) 
+                lineasm = lasm.format(words[2], classname) 
             elif words[0] in branchcmd:
                 lasm = branchcmd.get(words[0])
-                return lasm.format(words[1])
+                lineasm = lasm.format(fun, words[1])
             else:
                 print('invalid vm command in file {}, line {0}'.format(resource.name, linecount))
         resultfile.writelines(lineasm)
-        linecount += 1   
-
-print(funcmd['function'])
+        linecount += 1
+    
+    print(resource.name+': '+str(linecount))
+#print(funcmd['function'])
 #main(sys.argv[1])

@@ -11,7 +11,7 @@ pushcmd['argument']='@{0}\nD=A\n@R2\nA=M\nA=D+A\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\
 pushcmd['this']='@{0}\nD=A\n@R3\nA=M\nA=D+A\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'
 pushcmd['that']='@{0}\nD=A\n@R4\nA=M\nA=D+A\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'
 pushcmd['temp']='@{0}\nD=A\n@5\nA=D+A\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'
-pushcmd['static']='@@{1}.{0}\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'
+pushcmd['static']='@{1}.{0}\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'
 pushcmd['pointer']='@{0}\nD=A\n@R3\nA=D+A\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'
 pushcmd['constant']='@{0}\nD=A\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'
 
@@ -26,7 +26,7 @@ popcmd['that'] = '@{0}\nD=A\n@R4\nD=D+M\n@R13\nM=D\n@R0\nM=M-1\nA=M\nD=M\n'\
 +'@R13\nA=M\nM=D\n'
 popcmd['temp'] = '@{0}\nD=A\n@5\nD=D+A\n@R13\nM=D\n@R0\nM=M-1\nA=M\nD=M\n'\
 +'@R13\nA=M\nM=D\n'
-popcmd['static'] = '@R0\nM=M-1\nA=M\nD=M\n@{1}.{0}\nM=D\n'\
+popcmd['static'] = '@R0\nM=M-1\nA=M\nD=M\n@{1}.{0}\nM=D\n'
 popcmd['pointer'] = '@{0}\nD=A\n@R3\nD=D+A\n@R13\nM=D\n@R0\nM=M-1\nA=M\nD=M\n'\
 +'@R13\nA=M\nM=D\n'
     
@@ -56,20 +56,20 @@ funcmd['call'] = '@ret.{0}.{2}\nD=A\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'\
 +'@R3\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'\
 +'@R4\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'\
 +'@{1}\nD=A\n@5\nD=D+A\n@R0\nD=M-D\n@R2\nM=D\n'\
-+'@R0\nD=M\n@R1\nM=D\n@{0}\n0;JMP\n(ret.{0}.{2})'
++'@R0\nD=M\n@R1\nM=D\n@{0}\n0;JMP\n(ret.{0}.{2})\n'
 
 #push return-address // (Using the label declared below)
 #push LCL // Save LCL of the calling function
 #push ARG // Save ARG of the calling function
 #push THIS // Save THIS of the calling function
 #push THAT // Save THAT of the calling function
-#ARG = SP-n-5 // Reposition ARG (n ¼ number of args.)
+#ARG = SP-n-5 // Reposition ARG (n = number of args.)
 #LCL = SP // Reposition LCL
 #goto f // Transfer control
 #(return-address) // Declare a label for the return-address
 
 funcmd['function'] = '({0})\n@{1}\nD=A\n(createlcl.{0})\n@R0\nA=M\nM=0\n'\
-+'@R0\nM=M+1\nD=D-1\nD;JGT\n'
++'@R0\nM=M+1\nD=D-1\n@createlcl.{0}\nD;JGT\n'
 
 #(f) // Declare a label for the function entry
 #repeat k times: // k = number of local variables
@@ -83,6 +83,9 @@ funcmd['return'] = '@R1\nD=M\n@R13\nM=D\n'\
 +'@R13\nM=M-1\nA=M\nD=M\n@R2\nM=D\n'\
 +'@R13\nM=M-1\nA=M\nD=M\n@R1\nM=D\n'\
 +'@R13\nM=M-1\nA=M\n0;JMP\n'
+
+popcmd['argument'] = '@{0}\nD=A\n@R2\nD=D+M\n@R13\nM=D\n@R0\nM=M-1\nA=M\nD=M\n'\
++'@R13\nA=M\nM=D\n'
 
 #FRAME = LCL // FRAME is a temporary variable
 #*ARG = pop() // Reposition the return value for the caller
