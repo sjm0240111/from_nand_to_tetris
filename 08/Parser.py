@@ -51,7 +51,7 @@ branchcmd['goto'] = '@{}\n0;JMP\n'
 branchcmd['if-goto'] ='@R0\nM=M-1\nA=M\nD=M\n@{}\nD;JNE\n'
 
 funcmd = dict()
-funcmd['call'] = '@{}\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'\
+funcmd['call'] = '@{}\nD=A\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'\
 +'@R1\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'\
 +'@R2\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'\
 +'@R3\nD=M\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'\
