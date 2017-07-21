@@ -68,32 +68,42 @@ funcmd['call'] = '@ret.{0}.{2}\nD=A\n@R0\nA=M\nM=D\n@R0\nM=M+1\n'\
 #goto f // Transfer control
 #(return-address) // Declare a label for the return-address
 
-funcmd['function'] = '({0})\n@{1}\nD=A\n(createlcl.{0})\n@R0\nA=M\nM=0\n'\
-+'@R0\nM=M+1\nD=D-1\n@createlcl.{0}\nD;JGT\n'
+funcmd['function'] = '({0})\n@{1}\nD=A\n@nolcl.{0}\nD;JEQ\n(createlcl.{0})\n'\
++'@R0\nA=M\nM=0\n@R0\nM=M+1\nD=D-1\n@createlcl.{0}\nD;JGT\n(nolcl.{0})\n'
 
 #(f) // Declare a label for the function entry
 #repeat k times: // k = number of local variables
 #PUSH 0 // Initialize all of them to 0
 
-funcmd['return'] = '@R1\nD=M\n@R13\nM=D\n'\
+#funcmd['return'] = '@R1\nD=M\n@R14\nM=D\n'\
+#+'@5\nA=D-A\nD=M\n@R15\nM=D\n'\
+
+funcmd['return'] = '@5\nD=A\n@R1\nA=M-D\nD=M\n@R15\nM=D\n'\
 +'@R0\nA=M-1\nD=M\n@R2\nA=M\nM=D\n'\
 +'@R2\nD=M+1\n@R0\nM=D\n'\
-+'@R13\nM=M-1\nA=M\nD=M\n@R4\nM=D\n'\
-+'@R13\nM=M-1\nA=M\nD=M\n@R3\nM=D\n'\
-+'@R13\nM=M-1\nA=M\nD=M\n@R2\nM=D\n'\
-+'@R13\nM=M-1\nA=M\nD=M\n@R1\nM=D\n'\
-+'@R13\nM=M-1\nA=M\n0;JMP\n'
++'@R1\nM=M-1\nA=M\nD=M\n@R4\nM=D\n'\
++'@R1\nM=M-1\nA=M\nD=M\n@R3\nM=D\n'\
++'@R1\nM=M-1\nA=M\nD=M\n@R2\nM=D\n'\
++'@R1\nM=M-1\nA=M\nD=M\n@R1\nM=D\n'\
++'@R15\nA=M\n0;JMP\n'
 
-popcmd['argument'] = '@{0}\nD=A\n@R2\nD=D+M\n@R13\nM=D\n@R0\nM=M-1\nA=M\nD=M\n'\
-+'@R13\nA=M\nM=D\n'
+#funcmd['return'] = '@R1\nD=M\n@R13\nM=D\n'\
+#+'@R0\nA=M-1\nD=M\n@R2\nA=M\nM=D\n'\
+#+'@R2\nD=M+1\n@R0\nM=D\n'\
+#+'@R13\nM=M-1\nA=M\nD=M\n@R4\nM=D\n'\
+#+'@R13\nM=M-1\nA=M\nD=M\n@R3\nM=D\n'\
+#+'@R13\nM=M-1\nA=M\nD=M\n@R2\nM=D\n'\
+#+'@R13\nM=M-1\nA=M\nD=M\n@R1\nM=D\n'\
+#+'@R13\nM=M-1\nA=M\nA=M\n0;JMP\n'
 
+#funcmd['return'] = '@5\nD=A\n@R1\nA=M-D\nD=M\n@R15\nM=D\n'\
 #FRAME = LCL // FRAME is a temporary variable
+#RET = *(FRAME-5) // Put the return-address in a temp. var.
 #*ARG = pop() // Reposition the return value for the caller
 #SP = ARG+1 // Restore SP of the caller
 #THAT = *(FRAME-1) // Restore THAT of the caller
 #THIS = *(FRAME-2) // Restore THIS of the caller
 #ARG = *(FRAME-3) // Restore ARG of the caller
 #LCL = *(FRAME-4) // Restore LCL of the caller
-#RET = *(FRAME-5) // Put the return-address in a temp. var.
 #goto RET // Goto return-address (in the caller’s code)
 

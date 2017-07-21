@@ -35,9 +35,9 @@ def main(fname):
             nameasm = fname.split(sep='/')[-1]+'.asm'
             nameasm = os.path.join(fname,nameasm)
             fout = open(nameasm,'w')
-            fout.writelines('@256\nD=A\n@R0\nM=D\n')
-            fout.writelines('@Sys.init\n0;JMP\n')
-            #fout.writelines(funcmd['call'].format('Sys.init','0','0'))
+            fout.write('@256\nD=A\n@R0\nM=D\n')
+            #fout.writelines('@Sys.init\n0;JMP\n')
+            fout.write(funcmd['call'].format('Sys.init','0','0'))
             for pf in filelist:
                 fhand = openfile(pf)
                 throughfile(fhand,fout)
@@ -57,7 +57,7 @@ def openfile(file):
 def throughfile(resource,resultfile):
     linecount = 1
     fun = ''
-    classname = os.path.splitext(resource.name)[1]
+    classname = os.path.basename(resource.name)
     for line in resource:
         if '//' in line:
             line = re.sub(r'//(.*)','',line)
