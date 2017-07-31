@@ -75,9 +75,6 @@ funcmd['function'] = '({0})\n@{1}\nD=A\n@nolcl.{0}\nD;JEQ\n(createlcl.{0})\n'\
 #repeat k times: // k = number of local variables
 #PUSH 0 // Initialize all of them to 0
 
-#funcmd['return'] = '@R1\nD=M\n@R14\nM=D\n'\
-#+'@5\nA=D-A\nD=M\n@R15\nM=D\n'\
-
 funcmd['return'] = '@5\nD=A\n@R1\nA=M-D\nD=M\n@R15\nM=D\n'\
 +'@R0\nA=M-1\nD=M\n@R2\nA=M\nM=D\n'\
 +'@R2\nD=M+1\n@R0\nM=D\n'\
@@ -86,15 +83,6 @@ funcmd['return'] = '@5\nD=A\n@R1\nA=M-D\nD=M\n@R15\nM=D\n'\
 +'@R1\nM=M-1\nA=M\nD=M\n@R2\nM=D\n'\
 +'@R1\nM=M-1\nA=M\nD=M\n@R1\nM=D\n'\
 +'@R15\nA=M\n0;JMP\n'
-
-#funcmd['return'] = '@R1\nD=M\n@R13\nM=D\n'\
-#+'@R0\nA=M-1\nD=M\n@R2\nA=M\nM=D\n'\
-#+'@R2\nD=M+1\n@R0\nM=D\n'\
-#+'@R13\nM=M-1\nA=M\nD=M\n@R4\nM=D\n'\
-#+'@R13\nM=M-1\nA=M\nD=M\n@R3\nM=D\n'\
-#+'@R13\nM=M-1\nA=M\nD=M\n@R2\nM=D\n'\
-#+'@R13\nM=M-1\nA=M\nD=M\n@R1\nM=D\n'\
-#+'@R13\nM=M-1\nA=M\nA=M\n0;JMP\n'
 
 #funcmd['return'] = '@5\nD=A\n@R1\nA=M-D\nD=M\n@R15\nM=D\n'\
 #FRAME = LCL // FRAME is a temporary variable
