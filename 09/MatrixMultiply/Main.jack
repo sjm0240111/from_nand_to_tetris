@@ -2,7 +2,7 @@
 class Main {
     function void main () {
     
-    let matrixa = Matrix.setmatrix();
-    let matrixb = Matrix.setmatrix();
+    let matrixa = Matrix.new("matrixa");
+    let matrixb = Matrix.new("matrixb");
     }
 }

@@ -1,37 +1,49 @@
 //
 class Matrix {
-    field int rol;
+    field int row;
     field int col;
-    field array ;
+    field array data;
     
-    constructor Matrix new(int height, int length, array datamatrix) {
-        let row = height;
-        let col = length;
-        let data = datamatrix;
-        return this;
-    }
-    
-    function Matrix setmatrix(string name) {
-        var int m;
-        var int n;
-        var Matrix matrix;
+    constructor Matrix new(string name) {
         var int i;
         var int j;
-        var array mat;
         var array vec;
         do Output.printString("For ");
         do Output.printString(name);
-        let m = Keyboard.readInt("Enter the number of rows of matrix: ");
-        let n = Keyboard.readInt("Enter the number of columns of matrix: ");
-        mat = array.new(m);
+        let row = Keyboard.readInt("Enter the number of rows of matrix: ");
+        let col = Keyboard.readInt("Enter the number of columns of matrix: ");
+        let data = array.new(row);
+        let vec = array.new(col);
         while (i<m) {
             while (j<n) {
-                
-                j = j+1;
+                do Output.printString("Enter the value of ith row, jth column. i,j = ");
+                do Output.printInt(i);
+                do Output.printString(",");
+                do Output.printInt(j);
+                let vec[j] = Keyboard.readInt(":");
+                let j = j+1;
             }
-            i = i+1;
-            j = 0;
+            let data[i] = vec;
+            let i = i+1;
+            let j = 0;
         }
+        return this;
+    }
+    function Matrix matrixmult(mata,matb) {
+        var Matrix result;
+        var int m;
+        var int n;
+        var int o;
+        var int p;
+        let m = mata.row;
+        let n = mata.col;
+        let o = matb.row;
+        let p = matb.col;
+        if ( ~(n = o)) {
+            do Output.printString("Invalid dimension!)
+            return null
+        }
+        return
     }
 }
 
