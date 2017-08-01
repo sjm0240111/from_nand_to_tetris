@@ -4,16 +4,27 @@ class Matrix {
     field int col;
     field array data;
     
-    constructor Matrix new(string name) {
+    constructor Matrix new(int height, int length, array datamatrix) {
+        let row = height;
+        let col = length;
+        let data = datamatrix;
+        return this;
+    }
+    
+    function Matrix setmatrix(string name) {
+        var int m;
+        var int n;
+        var Matrix matrix;
         var int i;
         var int j;
+        var array mat;
         var array vec;
         do Output.printString("For ");
         do Output.printString(name);
-        let row = Keyboard.readInt("Enter the number of rows of matrix: ");
-        let col = Keyboard.readInt("Enter the number of columns of matrix: ");
-        let data = array.new(row);
-        let vec = array.new(col);
+        let m = Keyboard.readInt("Enter the number of rows of matrix: ");
+        let n = Keyboard.readInt("Enter the number of columns of matrix: ");
+        mat = array.new(m);
+        vec = array.new(n);
         while (i<m) {
             while (j<n) {
                 do Output.printString("Enter the value of ith row, jth column. i,j = ");
@@ -23,27 +34,49 @@ class Matrix {
                 let vec[j] = Keyboard.readInt(":");
                 let j = j+1;
             }
-            let data[i] = vec;
+            let mat[i] = vec;
             let i = i+1;
             let j = 0;
         }
-        return this;
-    }
+        let matrix = Matrix.new(m,n,mat);
+        return matrix;
+        }
+    
     function Matrix matrixmult(mata,matb) {
         var Matrix result;
-        var int m;
+        var int m;   // (m,n) and (o,p) are dimensions of matrixa and matrixb respectively.
         var int n;
         var int o;
         var int p;
+        var int i;   // i,j,k are all iteration variable
+        var int j;
+        var int k;
+        var array mat;  // mat and vec are used to set the data of matrix.
+        var array vec;
         let m = mata.row;
         let n = mata.col;
         let o = matb.row;
         let p = matb.col;
         if ( ~(n = o)) {
-            do Output.printString("Invalid dimension!)
-            return null
+            do Output.printString("Invalid dimension!");
+            return null;
         }
-        return
+        let mat = array.new(m);
+        let vec = array.new(p);
+        while (i<m) {
+            while (j<p) {
+                while (k<n) {
+                    let vec[j] = mata.data[i][o] * matb.data[o][j];
+                    let k = k + 1;
+                }
+                let j = j + 1;
+                let k = 0;
+            }
+            let i = i + 1;
+            let j = 0;
+            let mat[i] = vec;
+        let result = Matrix.new(m,p,mat);
+        return result;
     }
 }
 

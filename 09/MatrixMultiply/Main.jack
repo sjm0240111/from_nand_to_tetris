@@ -2,7 +2,8 @@
 class Main {
     function void main () {
     
-    let matrixa = Matrix.new("matrixa");
-    let matrixb = Matrix.new("matrixb");
+    let matrixa = Matrix.setmatrix("matrixa");
+    let matrixb = Matrix.setmatrix("matrixb");
+    let result = Matrix.matrixmult(matrixa,matrixb);
     }
 }
