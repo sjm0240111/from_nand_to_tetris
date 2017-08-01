@@ -1,0 +1,37 @@
+//
+class Matrix {
+    field int rol;
+    field int col;
+    field array ;
+    
+    constructor Matrix new(int height, int length, array datamatrix) {
+        let row = height;
+        let col = length;
+        let data = datamatrix;
+        return this;
+    }
+    
+    function Matrix setmatrix(string name) {
+        var int m;
+        var int n;
+        var Matrix matrix;
+        var int i;
+        var int j;
+        var array mat;
+        var array vec;
+        do Output.printString("For ");
+        do Output.printString(name);
+        let m = Keyboard.readInt("Enter the number of rows of matrix: ");
+        let n = Keyboard.readInt("Enter the number of columns of matrix: ");
+        mat = array.new(m);
+        while (i<m) {
+            while (j<n) {
+                
+                j = j+1;
+            }
+            i = i+1;
+            j = 0;
+        }
+    }
+}
+

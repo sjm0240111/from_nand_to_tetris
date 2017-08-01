@@ -1,0 +1,8 @@
+//
+class Main {
+    function void main () {
+    
+    let matrixa = Matrix.setmatrix();
+    let matrixb = Matrix.setmatrix();
+    }
+}

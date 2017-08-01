@@ -26,11 +26,11 @@ def main(fname):
         if len(filelist) == 0:
             print('no vm file exist')
             exit()
-        if len(filelist) == 1:                        # one file in dir
-            fhand = openfile(pathedfile)
-            fout = open(re.sub(r'.vm','.asm',pathedfile),'w')
-            throughfile(fhand,fout)
-            fout.close()
+#        if len(filelist) == 1:                        # one file in dir
+#            fhand = openfile(pathedfile)
+#            fout = open(re.sub(r'.vm','.asm',pathedfile),'w')
+#            throughfile(fhand,fout)
+#            fout.close()
         else:                                           # multiple files
             nameasm = fname.split(sep='/')[-1]+'.asm'
             nameasm = os.path.join(fname,nameasm)
@@ -95,4 +95,4 @@ def throughfile(resource,resultfile):
     
     print(resource.name+': '+str(linecount))
 #print(funcmd['function'])
-#main(sys.argv[1])
+main(sys.argv[1])
