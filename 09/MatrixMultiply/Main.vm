@@ -81,12 +81,6 @@ push constant 32
 call String.appendChar 2
 call Output.printString 1
 pop temp 0
-push local 0
-call Matrix.printMatrix 1
-pop temp 0
-push local 1
-call Matrix.printMatrix 1
-pop temp 0
 push local 2
 call Matrix.printMatrix 1
 pop temp 0

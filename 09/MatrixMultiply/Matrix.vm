@@ -519,13 +519,6 @@ pop temp 0
 pop pointer 1
 push temp 0
 pop that 0
-push local 4
-push local 7
-add
-pop pointer 1
-push that 0
-call Output.printInt 1
-pop temp 0
 push local 5
 push constant 1
 add
@@ -554,6 +547,8 @@ add
 pop local 3
 push constant 0
 pop local 4
+goto WHILE_EXP0
+label WHILE_END0
 push this 0
 push local 2
 push local 6
@@ -561,8 +556,6 @@ call Matrix.new 3
 pop local 0
 push local 0
 return
-goto WHILE_EXP0
-label WHILE_END0
 function Matrix.printMatrix 3
 push argument 0
 pop pointer 0

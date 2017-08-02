@@ -8,8 +8,8 @@ class Main {
     let matrixb = Matrix.setmatrix("matrixb");
     let result = matrixa.matrixmult(matrixb);
     do Output.printString("For result matrix, ");
-    do matrixa.printMatrix();
-    do matrixb.printMatrix();
+    //do matrixa.printMatrix();
+    //do matrixb.printMatrix();
     do result.printMatrix();
     return;
     }

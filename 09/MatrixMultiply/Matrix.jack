@@ -79,18 +79,12 @@ class Matrix {
         let k = 0;
         while (i<row) {
             let ara = data[i];
-            //do Output.printString("next line");
-            //do Output.printInt(ara[0]);
             let vec = Array.new(n);
             while (j<n) {
                 let vec[j] = 0;
                 while (k<col) {
                     let arb = matrixb[k];
-                    //do Output.printInt(ara[k]);
-                    //do Output.printInt(arb[j]);
                     let vec[j] = (ara[k]) * (arb[j]) + vec[j];
-                    //do Output.printString("vecj");
-                    do Output.printInt(vec[j]);
                     let k = k + 1;
                 }
                 let j = j + 1;
@@ -99,9 +93,9 @@ class Matrix {
             let mat[i] = vec;
             let i = i + 1;
             let j = 0;
+        }
         let result = Matrix.new(row,n,mat);
         return result;
-        }
     }
 
     method void printMatrix() {
