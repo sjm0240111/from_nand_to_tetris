@@ -1,10 +1,16 @@
 //
 class Main {
     function void main () {
-    
+    var Matrix matrixa;
+    var Matrix matrixb;
+    var Matrix result;
     let matrixa = Matrix.setmatrix("matrixa");
     let matrixb = Matrix.setmatrix("matrixb");
-    let result = Matrix.matrixmult(matrixa,matrixb);
-    do Matrix.printMatrix(result);
+    let result = matrixa.matrixmult(matrixb);
+    do Output.printString("For result matrix, ");
+    do matrixa.printMatrix();
+    do matrixb.printMatrix();
+    do result.printMatrix();
+    return;
     }
 }

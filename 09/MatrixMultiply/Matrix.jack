@@ -2,13 +2,22 @@
 class Matrix {
     field int row;
     field int col;
-    field array data;
+    field Array data;
     
-    constructor Matrix new(int height, int length, array datamatrix) {
+    constructor Matrix new(int height, int length, Array datamatrix) {
         let row = height;
         let col = length;
         let data = datamatrix;
         return this;
+    }
+    method int getrow() { return row;}
+    method int getcol() { return col; }
+    method int getdata() { return data; }
+    
+    method void dispose() {
+        do Memory.deAlloc(data);
+        do Memory.deAlloc(this);
+        return;
     }
     
     function Matrix setmatrix(string name) {
@@ -17,16 +26,19 @@ class Matrix {
         var Matrix matrix;
         var int i;
         var int j;
-        var array mat;
-        var array vec;
+        var Array mat;
+        var Array vec;
         do Output.printString("For ");
         do Output.printString(name);
+        do Output.println();
         let m = Keyboard.readInt("Enter the number of rows of matrix: ");
         let n = Keyboard.readInt("Enter the number of columns of matrix: ");
-        mat = array.new(m);
-        vec = array.new(n);
+        let mat = Array.new(m);
+        let i = 0;
+        let j = 0;
         while (i<m) {
-            while (j<n) {
+            let vec = Array.new(n);  // give a new address to vec
+            while (j<n) {             
                 do Output.printString("Enter the value of ith row, jth column. i,j = ");
                 do Output.printInt(i);
                 do Output.printString(",");
@@ -42,49 +54,75 @@ class Matrix {
         return matrix;
         }
     
-    function Matrix matrixmult(Matrix mata, Matrix matb) {
+    method Matrix matrixmult(Matrix matb) {
         var Matrix result;
+        var int m;   // (m,n) are dimensions of matrixb.
+        var int n;   // This help us to write and also make the program faster
         var int i;   // i,j,k are all iteration variable
         var int j;
         var int k;
-        var array mat;  // mat and vec are used to set the data of matrix.
-        var array vec;
-        if ( ~(mata.col = matb.row)) {
+        var Array mat;  // mat and vec are used to set the data of matrix.
+        var Array vec;
+        var Array matrixb;  // the data of matrixb.
+        var Array ara;  // because indexing like matrix[a][b] is invalid here, we need to make some compromise.
+        var Array arb;
+        let m = matb.getrow();
+        let n = matb.getcol();
+        let matrixb = matb.getdata();
+        if ( ~(col = m)) {
             do Output.printString("Invalid dimension!");
-            return null;
+            do Sys.halt();
         }
-        let mat = array.new(mata.row);
-        let vec = array.new(matb.col);
-        while (i<mata.row) {
-            while (j<matb.col) {
-                while (k<mata.col) {
-                    let vec[j] = mata.data[i][k] * matb.data[k][j];
+        let mat = Array.new(row);
+        let i = 0;
+        let j = 0;
+        let k = 0;
+        while (i<row) {
+            let ara = data[i];
+            //do Output.printString("next line");
+            //do Output.printInt(ara[0]);
+            let vec = Array.new(n);
+            while (j<n) {
+                let vec[j] = 0;
+                while (k<col) {
+                    let arb = matrixb[k];
+                    //do Output.printInt(ara[k]);
+                    //do Output.printInt(arb[j]);
+                    let vec[j] = (ara[k]) * (arb[j]) + vec[j];
+                    //do Output.printString("vecj");
+                    do Output.printInt(vec[j]);
                     let k = k + 1;
                 }
                 let j = j + 1;
                 let k = 0;
             }
+            let mat[i] = vec;
             let i = i + 1;
             let j = 0;
-            let mat[i] = vec;
-        let result = Matrix.new(m,p,mat);
+        let result = Matrix.new(row,n,mat);
         return result;
+        }
     }
-}
 
-    method void printMatrix(Matrix mat) {
+    method void printMatrix() {
         var int i;
         var int j;
+        var Array ar;
         let i = 0;
         let j = 0;
-        while (i<mat.row) {
-            while (j<mat.col) {
-                do Output.printInt(mat[i][j]);
+        do Output.printString("the values are:");
+        do Output.println();
+        while (i<row) {
+            let ar = data[i];
+            while (j<col) {
+                do Output.printInt(ar[j]);
                 do Output.printString(" ");
                 let j = j + 1;
             }
             do Output.println();
             let i = i + 1;
+            let j = 0;
         }
+        return;
     }
 }
