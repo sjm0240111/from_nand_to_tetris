@@ -42,31 +42,23 @@ class Matrix {
         return matrix;
         }
     
-    function Matrix matrixmult(mata,matb) {
+    function Matrix matrixmult(Matrix mata, Matrix matb) {
         var Matrix result;
-        var int m;   // (m,n) and (o,p) are dimensions of matrixa and matrixb respectively.
-        var int n;
-        var int o;
-        var int p;
         var int i;   // i,j,k are all iteration variable
         var int j;
         var int k;
         var array mat;  // mat and vec are used to set the data of matrix.
         var array vec;
-        let m = mata.row;
-        let n = mata.col;
-        let o = matb.row;
-        let p = matb.col;
-        if ( ~(n = o)) {
+        if ( ~(mata.col = matb.row)) {
             do Output.printString("Invalid dimension!");
             return null;
         }
-        let mat = array.new(m);
-        let vec = array.new(p);
-        while (i<m) {
-            while (j<p) {
-                while (k<n) {
-                    let vec[j] = mata.data[i][o] * matb.data[o][j];
+        let mat = array.new(mata.row);
+        let vec = array.new(matb.col);
+        while (i<mata.row) {
+            while (j<matb.col) {
+                while (k<mata.col) {
+                    let vec[j] = mata.data[i][k] * matb.data[k][j];
                     let k = k + 1;
                 }
                 let j = j + 1;
@@ -80,3 +72,19 @@ class Matrix {
     }
 }
 
+    method void printMatrix(Matrix mat) {
+        var int i;
+        var int j;
+        let i = 0;
+        let j = 0;
+        while (i<mat.row) {
+            while (j<mat.col) {
+                do Output.printInt(mat[i][j]);
+                do Output.printString(" ");
+                let j = j + 1;
+            }
+            do Output.println();
+            let i = i + 1;
+        }
+    }
+}

@@ -5,5 +5,6 @@ class Main {
     let matrixa = Matrix.setmatrix("matrixa");
     let matrixb = Matrix.setmatrix("matrixb");
     let result = Matrix.matrixmult(matrixa,matrixb);
+    do Matrix.printMatrix(result);
     }
 }
