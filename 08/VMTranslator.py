@@ -15,6 +15,7 @@ def main(fname):
         fhand = openfile(fname)
         throughfile(fhand,fout)       
         fout.close()
+        fhand.close()
         print(fout.name)
     elif os.path.isdir(fname):                       # one directory        
         filelist = list()
