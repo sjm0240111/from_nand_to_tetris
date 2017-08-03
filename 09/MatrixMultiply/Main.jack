@@ -1,4 +1,7 @@
-//
+// The matrix multiply program include Main.jack and Matrix.jack
+// To see the pricipal of matrix multiply, see https://en.wikipedia.org/wiki/Matrix_multiplication.
+// note that some functions we used are in the OS classes, so it's required to load 
+// the OS classes.
 class Main {
     function void main () {
     var Matrix matrixa;
@@ -8,7 +11,7 @@ class Main {
     let matrixb = Matrix.setmatrix("matrixb");
     let result = matrixa.matrixmult(matrixb);
     do Output.printString("For result matrix, ");
-    //do matrixa.printMatrix();
+    //do matrixa.printMatrix();       // this can be used to print the input matrix.
     //do matrixb.printMatrix();
     do result.printMatrix();
     return;

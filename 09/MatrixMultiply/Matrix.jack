@@ -1,25 +1,29 @@
-//
+/** This class contains methods and functions to deal with matrix  */
 class Matrix {
     field int row;
     field int col;
     field Array data;
     
+    /** construct matrix object, which contains its dimensions and data */
     constructor Matrix new(int height, int length, Array datamatrix) {
         let row = height;
         let col = length;
         let data = datamatrix;
         return this;
     }
+    /** methods to get the attributes of matrix */
     method int getrow() { return row;}
     method int getcol() { return col; }
     method int getdata() { return data; }
     
+    /** dispose the matrix once not used */
     method void dispose() {
         do Memory.deAlloc(data);
         do Memory.deAlloc(this);
         return;
     }
     
+    /** set matrix by manually input */
     function Matrix setmatrix(string name) {
         var int m;
         var int n;
@@ -54,6 +58,7 @@ class Matrix {
         return matrix;
         }
     
+    /** multiply the current matrix with another matrix */
     method Matrix matrixmult(Matrix matb) {
         var Matrix result;
         var int m;   // (m,n) are dimensions of matrixb.
@@ -97,7 +102,7 @@ class Matrix {
         let result = Matrix.new(row,n,mat);
         return result;
     }
-
+    /** print the current matrix in a user friendly way*/
     method void printMatrix() {
         var int i;
         var int j;
