@@ -8,6 +8,7 @@ Created on Thu Aug  3 21:13:19 2017
 import os
 import re
 import sys
+from JackTokenizer import *
 
 def main(fname):
     if os.path.isfile(fname):                         # user gives one file
@@ -43,11 +44,27 @@ def analyzefile(jackfile):
     symbolptn = r'(\{)|(\})|(\()|(\))|(\[)|(\])|(\.)|(\,)|(;)|(\+)|'\
     +'(\-)|(\*)|(/)|(&)|(\|)|(<)|(>)|(=)|(~)'
     symbolrpl = r' \1\2\3\4\5\6\7\8\9\10\11\12\13\14\15\16\17\18\19 '
-    text = re.sub(comment, ' ',text)
-    text = re.sub(symbolptn, symbolrpl, text)
+    text = re.sub(comment, ' ',text)               # remove comment
+    text = re.sub(symbolptn, symbolrpl, text)       # separate elements
+    text = text.strip()
     wordlist = re.split(r'\s+', text)
     namevm = re.sub(r'.jack','.vm',jackfile)
     fout = open(namevm, 'w')
+    i = 1
+    for i in wordlist:
+        if wordlist[i] in keywords:
+            
+        elif wordlist[i] in symbols:
+            
+        elif wordlist[i].startswith('"'):
+            
+        elif wordlist[i].isnumeric():
+            
+        else:
+            
+        i += 1
+            
+            
     
     
 
