@@ -28,18 +28,8 @@ def main(fname):
             analyzefile(pf)
     else:
         print('no such file or directory')
-        
-def openfile(file):
-    try:
-        fhand = open(file)
-    except:
-        print('File cannot be opened:', file)
-        exit()
-    return fhand
 
-def analyzefile(jackfile):
-    with open(jackfile, 'r') as myfile:
-        text = myfile.read()
+def parseword(text):
     comment = r'//.*\n|/\*.*?\*/'
     symbolptn = r'(\{)|(\})|(\()|(\))|(\[)|(\])|(\.)|(\,)|(;)|(\+)|'\
     +'(\-)|(\*)|(/)|(&)|(\|)|(<)|(>)|(=)|(~)'
@@ -47,21 +37,56 @@ def analyzefile(jackfile):
     text = re.sub(comment, ' ',text)               # remove comment
     text = re.sub(symbolptn, symbolrpl, text)       # separate elements
     text = text.strip()
-    wordlist = re.split(r'\s+', text)
+    wordlist = re.split(r'\s+', text)   
+    return wordlist     
+
+def analyzefile(jackfile):
+    with open(jackfile, 'r') as myfile:
+        text = myfile.read()
+    wordlist = parseword(text)
     namevm = re.sub(r'.jack','.vm',jackfile)
     fout = open(namevm, 'w')
-    i = 1
+    i = 0
+    vardeci = 0
+    nTlist = list()
+    paramstate = False
     for i in wordlist:
-        if wordlist[i] in keywords:
-            
-        elif wordlist[i] in symbols:
-            
-        elif wordlist[i].startswith('"'):
-            
-        elif wordlist[i].isnumeric():
-            
+        word = wordlist[i]
+        if word in keywords:
+            if word in structure:             # structure keyword with {}
+                nTlist.append(word)
+                fout.write(nTStart.get(word))
+            if word in variable:                # variable declaration
+                nTlist.append(word)    
+                fout.write(nTStart.get(word))
+                vardeci = i
+            fout.write('<keyword>{}</keyword>'.format(word))
+        elif word in symbols:
+            if word == '}' and nTlist[-1] in statements:
+                fout.write('</statements>\n')
+            elif word == '(':
+                if nTlist[-1] in subroutine:
+                    fout.write('<parameterList>\n')
+                    paramstate = True
+            fout.write('<symbol>{}</symbol>\n'.format(word))
+            if word == '{' and nTlist[-1] in statements:
+                fout.write('<statements>\n')
+            elif word == '}':
+                fout.write(nTEnd.get(nTlist.pop()))              
+            elif word == ')':
+                if paramstate == True:
+                    fout.write('</parameterList>\n')
+                    paramstate = False
+                elif 
+                
+        elif word.startswith('"'):
+            word = word.strip('"')
+            fout.write('<stringConstant>{}</stringConstant>'.format(word))
+        elif word.isnumeric():
+            fout.write('<integerConstant>{}</integerConstant>'.format(word))
         else:
-            
+        if i-vardeci == 2:
+            fout.write(nTEnd.get(nTlist.pop()))
         i += 1
             
             
