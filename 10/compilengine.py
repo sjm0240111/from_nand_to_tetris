@@ -57,7 +57,10 @@ class CompileEngine:
     def compilecvd(self):
         while self.cur() in {'field','static'}:
             self.fhand.write('<classVarDec>\n')
-            self.tokenize(4)
+            self.tokenize(3)
+            while self.cur() == ',':
+                self.tokenize(2)
+            self.tokenize(1)
             self.fhand.write('</classVarDec>\n')
             
     def compilesub(self):
@@ -65,41 +68,48 @@ class CompileEngine:
             self.fhand.write('<subroutineDec>\n')
             self.tokenize(4)
             self.compilepml()
-            self.tokenize(2)
-            self.compilesbd()
             self.tokenize(1)
+            self.compilesbd()
             self.fhand.write('</subroutineDec>\n')
             
-    def compilepml(self):
+    def compilepml(self):                         # compile parameterlist
+        self.fhand.write('<parameterList>\n')
         if self.cur() != ')':
-            self.tokenize(1)
+            self.tokenize(2)
             while self.cur() == ',':
-                self.tokenize(2)
+                self.tokenize(3)
+        self.fhand.write('</parameterList>\n')
                 
     def compilesbd(self):
         self.fhand.write('<subroutineBody>\n')
+        self.tokenize(1)
         self.compilevar()        
-        self.compilestm()        
+        self.compilestm()
+        self.tokenize(1)        
         self.fhand.write('</subroutineBody>\n')
         
     def compilevar(self):
         while self.cur() == 'var':
             self.fhand.write('<varDec>\n')
-            self.tokenize(4)
+            self.tokenize(3)
+            while self.cur() == ',':
+                self.tokenize(2)
+            self.tokenize(1)
             self.fhand.write('</varDec>\n')
             
     def compilestm(self):
         self.fhand.write('<statements>\n')
-        if self.cur() == 'let':
-            self.compilelet()
-        elif self.cur() == 'do':
-            self.compiledo()
-        elif self.cur() == 'if':
-            self.compileif()
-        elif self.cur() == 'while':
-            self.compilewhile()
-        elif self.cur() == 'return':
-            self.compilereturn()
+        while self.cur() in {'let','do','if','while','return'}:
+            if self.cur() == 'let':
+                self.compilelet()
+            elif self.cur() == 'do':
+                self.compiledo()
+            elif self.cur() == 'if':
+                self.compileif()
+            elif self.cur() == 'while':
+                self.compilewhile()
+            elif self.cur() == 'return':
+                self.compilereturn()
         self.fhand.write('</statements>\n')
         
     def compilelet(self):
@@ -116,8 +126,15 @@ class CompileEngine:
         
     def compiledo(self):
         self.fhand.write('<doStatement>\n')
-        self.tokenize(1)
-        self.compilexp()
+        self.tokenize(2)
+        if self.cur() == '.':
+            self.tokenize(3)
+            self.compilexpl()
+            self.tokenize(1)
+        elif self.cur() == '(':
+            self.tokenize(1)
+            self.compilexpl()
+            self.tokenize(1)     
         self.tokenize(1)
         self.fhand.write('</doStatement>\n')
         
@@ -176,7 +193,7 @@ class CompileEngine:
             self.tokenize(1)
             self.compilexp()
             self.tokenize(1)
-        else:
+        elif self.cur()[0].isalpha() or self.cur()[0] == '_':
             self.tokenize(1)
             if self.cur() == '[':
                 self.tokenize(1)
@@ -194,8 +211,9 @@ class CompileEngine:
         
     def compilexpl(self):
         self.fhand.write('<expressionList>\n')
-        self.compilexp()
-        while self.cur() == ',':
-            self.tokenize(1)
+        if self.cur() != ')':
             self.compilexp()
+            while self.cur() == ',':
+                self.tokenize(1)
+                self.compilexp()
         self.fhand.write('</expressionList>\n')

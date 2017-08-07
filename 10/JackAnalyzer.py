@@ -7,8 +7,7 @@ Created on Thu Aug  3 21:13:19 2017
 
 import os
 import re
-#import sys
-#from JackTokenizer import *
+import sys
 from compilengine import *
 
 def main(fname):
@@ -32,14 +31,23 @@ def main(fname):
         print('no such file or directory')
 
 def parseword(text):
-    comment = r'//.*\n|/\*.*?\*/'
+    comment = r'//.*\n|/\*[\s\S]*?\*/'
     symbolptn = r'(\{)|(\})|(\()|(\))|(\[)|(\])|(\.)|(\,)|(;)|(\+)|'\
     +'(\-)|(\*)|(/)|(&)|(\|)|(<)|(>)|(=)|(~)'
     symbolrpl = r' \1\2\3\4\5\6\7\8\9\10\11\12\13\14\15\16\17\18\19 '
     text = re.sub(comment, ' ',text)               # remove comment
-    text = re.sub(symbolptn, symbolrpl, text)       # separate elements
-    text = text.strip()
-    wordlist = re.split(r'\s+', text)   
+    _roughlist = text.split('"')
+    i = 1
+    wordlist = list()
+    while i < len(_roughlist):
+        _subtext = re.sub(symbolptn, symbolrpl, _roughlist[i-1])       # separate elements
+        _subtext = _subtext.strip() 
+        wordlist = wordlist + re.split(r'\s+', _subtext) 
+        wordlist.append('"'+_roughlist[i])
+        i = i+2
+    _subtext = re.sub(symbolptn, symbolrpl, _roughlist[i-1])      
+    _subtext = _subtext.strip() 
+    wordlist = wordlist + re.split(r'\s+', _subtext) 
     return wordlist     
 
 def analyzefile(jackfile):
@@ -48,10 +56,9 @@ def analyzefile(jackfile):
     wordlist = parseword(text)
     namexml = re.sub(r'.jack','.xml',jackfile)
     fout = open(namexml, 'w')
-    fout.write('<tokens>\n')
     jackobj = CompileEngine(wordlist,fout)
-    jackobj.tokenize(len(wordlist))
-    fout.write('</tokens>\n')
+    #jackobj.tokenize(len(wordlist))
+    jackobj.compileClass()
     fout.close()
             
-    
+main(sys.argv[1])  

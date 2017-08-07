@@ -1,0 +1,250 @@
+class Board {
+    field Array rows, col0, col1, col2, col3;
+    field int zeroCol, zeroRow;
+
+    constructor Board new() {
+        // declare arrays
+        let rows = Array.new(4);
+        let col0 = Array.new(4);
+        let col1 = Array.new(4);
+        let col2 = Array.new(4);
+        let col3 = Array.new(4);
+        // initial rows
+        let rows[0] = col0;
+        let rows[1] = col1;
+        let rows[2] = col2;
+        let rows[3] = col3;
+        // initial columns
+        let col0[0] = 15;
+        let col0[1] = 14;
+        let col0[2] = 13;
+        let col0[3] = 12;
+        let col1[0] = 11;
+        let col1[1] = 10;
+        let col1[2] = 9;
+        let col1[3] = 8;
+        let col2[0] = 7;
+        let col2[1] = 6;
+        let col2[2] = 5;
+        let col2[3] = 4;
+        let col3[0] = 3;
+        let col3[1] = 1;
+        let col3[2] = 2;
+        let col3[3] = 0;
+        // record zero number postion
+        let zeroCol = 3;
+        let zeroRow = 3;
+
+        return this;
+    }
+
+    method void draw() {
+        // print every rows and columns
+        do Output.moveCursor(6, 23);
+        do printNumber(0, 0);
+        do Output.moveCursor(6, 28);
+        do printNumber(1, 0);
+        do Output.moveCursor(6, 33);
+        do printNumber(2, 0);
+        do Output.moveCursor(6, 38);
+        do printNumber(3, 0);
+
+        do Output.moveCursor(9, 23);
+        do printNumber(0, 1);
+        do Output.moveCursor(9, 28);
+        do printNumber(1, 1);
+        do Output.moveCursor(9, 33);
+        do printNumber(2, 1);
+        do Output.moveCursor(9, 38);
+        do printNumber(3, 1);
+
+        do Output.moveCursor(12, 23);
+        do printNumber(0, 2);
+        do Output.moveCursor(12, 28);
+        do printNumber(1, 2);
+        do Output.moveCursor(12, 33);
+        do printNumber(2, 2);
+        do Output.moveCursor(12, 38);
+        do printNumber(3, 2);
+
+        do Output.moveCursor(15, 23);
+        do printNumber(0, 3);
+        do Output.moveCursor(15, 28);
+        do printNumber(1, 3);
+        do Output.moveCursor(15, 33);
+        do printNumber(2, 3);
+        do Output.moveCursor(15, 38);
+        do printNumber(3, 3);
+
+        return;
+    }
+
+    method boolean moveLeft() {
+        var int temp, newCol;
+        let newCol = zeroCol + 1;
+        // move left if given position is valid
+        if (Board.valid(newCol, zeroRow)) {
+            // get target position number;
+            let temp = get(newCol, zeroRow);
+            // switch position with zero
+            do set(zeroCol, zeroRow, temp);
+            do set(newCol, zeroRow, 0);
+            // record new zero position
+            let zeroCol = newCol;
+            // if valid moved return true
+            return true;
+        }
+        // else false
+        return false;
+    }
+
+    method boolean moveRight() {
+        var int temp, newCol;
+        let newCol = zeroCol - 1;
+        // move right if given position is valid
+        if (Board.valid(newCol, zeroRow)) {
+            // get target position number;
+            let temp = get(newCol, zeroRow);
+            // switch position with zero
+            do set(zeroCol, zeroRow, temp);
+            do set(newCol, zeroRow, 0);
+            // record new zero position
+            let zeroCol = newCol;
+            // if valid moved return true
+            return true;
+        }
+        // else false
+        return false;
+    }
+
+    method boolean moveUp() {
+        var int temp, newRow;
+        let newRow = zeroRow + 1;
+        // move up if given position is valid
+        if (Board.valid(zeroCol, newRow)) {
+            // get target position number;
+            let temp = get(zeroCol, newRow);
+            // switch position with zero
+            do set(zeroCol, zeroRow, temp);
+            do set(zeroCol, newRow, 0);
+            // record new zero position
+            let zeroRow = newRow;
+            // if valid moved return true
+            return true;
+        }
+        // else false
+        return false;
+    }
+
+    method boolean moveDown() {
+        var int temp, newRow;
+        let newRow = zeroRow - 1;
+        // move down if given position is valid
+        if (Board.valid(zeroCol, newRow)) {
+            // get target position number;
+            let temp = get(zeroCol, newRow);
+            // switch position with zero
+            do set(zeroCol, zeroRow, temp);
+            do set(zeroCol, newRow, 0);
+            // record new zero position
+            let zeroRow = newRow;
+            // if valid moved return true
+            return true;
+        }
+        // else false
+        return false;
+    }
+
+    function boolean valid(int col, int row) {
+        // check if given position is valid
+        var boolean invalid, invalidCol, invalidRow;
+        // check if column is valid
+        let invalidCol = (col < 0) | (col > 3);
+        // check if row is valid
+        let invalidRow = (row < 0) | (row > 3);
+        // check both is valid
+        let invalid = invalidCol | invalidRow;
+
+        // return result
+        if (invalid) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    method void set(int col, int row, int value) {
+        // set specific number if given arguments are valid
+        if (Board.valid(col, row)) {
+            if (row = 0) {
+                let col0[col] = value;
+            }
+            if (row = 1) {
+                let col1[col] = value;
+            }
+            if (row = 2) {
+                let col2[col] = value;
+            }
+            if (row = 3) {
+                let col3[col] = value;
+            }
+        }
+        return;
+    }
+
+    method int get(int col, int row) {
+        // get specific number if given arguments are valid
+        if (Board.valid(col, row)) {
+            if (row = 0) {
+                return col0[col];
+            }
+            if (row = 1) {
+                return col1[col];
+            }
+            if (row = 2) {
+                return col2[col];
+            }
+            if (row = 3) {
+                return col3[col];
+            }
+        }
+        // raise error if not valid
+        return Sys.error(0);
+    }
+
+    method void printNumber(int col, int row) {
+        // print numbers, if number is zero then print empty space
+        var int number;
+        let number = get(col, row);
+        if (number = 0) {
+            do Output.printChar(32);
+        } else {
+            do Output.printInt(number);
+        }
+        return;
+    }
+
+    method boolean won() {
+        // if numbers are in order then win
+        if (col0[0] = 1 &
+            col0[1] = 2 &
+            col0[2] = 3 &
+            col0[3] = 4 &
+            col1[0] = 5 &
+            col1[1] = 6 &
+            col1[2] = 7 &
+            col1[3] = 8 &
+            col2[0] = 9 &
+            col2[1] = 10 &
+            col2[2] = 11 &
+            col2[3] = 12 &
+            col3[0] = 13 &
+            col3[1] = 14 &
+            col3[2] = 15) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+}
