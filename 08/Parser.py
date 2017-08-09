@@ -84,7 +84,6 @@ funcmd['return'] = '@5\nD=A\n@R1\nA=M-D\nD=M\n@R15\nM=D\n'\
 +'@R1\nM=M-1\nA=M\nD=M\n@R1\nM=D\n'\
 +'@R15\nA=M\n0;JMP\n'
 
-#funcmd['return'] = '@5\nD=A\n@R1\nA=M-D\nD=M\n@R15\nM=D\n'\
 #FRAME = LCL // FRAME is a temporary variable
 #RET = *(FRAME-5) // Put the return-address in a temp. var.
 #*ARG = pop() // Reposition the return value for the caller

@@ -15,24 +15,18 @@ def main(fname):
         fhand = openfile(fname)
         throughfile(fhand,fout)       
         fout.close()
-        fhand.close()
-        print(fout.name)
+        #print(fout.name)
     elif os.path.isdir(fname):                       # one directory        
         filelist = list()
         for file in os.listdir(fname):                         # get all vm files
             if file.split(sep='.')[-1] == 'vm':
                 pathedfile = os.path.join(fname, file)
                 filelist.append(pathedfile)
-        print(filelist)
+        #print(filelist)
         if len(filelist) == 0:
             print('no vm file exist')
             exit()
-#        if len(filelist) == 1:                        # one file in dir
-#            fhand = openfile(pathedfile)
-#            fout = open(re.sub(r'.vm','.asm',pathedfile),'w')
-#            throughfile(fhand,fout)
-#            fout.close()
-        else:                                           # multiple files
+        else:                                           # at least one file
             nameasm = fname.split(sep='/')[-1]+'.asm'
             nameasm = os.path.join(fname,nameasm)
             fout = open(nameasm,'w')
@@ -43,7 +37,6 @@ def main(fname):
                 fhand = openfile(pf)
                 throughfile(fhand,fout)
         fout.close()
-        fhand.close()
     else:
         print('no such file or directory')
             
@@ -93,7 +86,7 @@ def throughfile(resource,resultfile):
                 print('invalid vm command in file {}, line {0}'.format(resource.name, linecount))
         resultfile.writelines(lineasm)
         linecount += 1
-    
-    print(resource.name+': '+str(linecount))
-#print(funcmd['function'])
+    resource.close()
+    #print(resource.name+': '+str(linecount))
+
 main(sys.argv[1])
