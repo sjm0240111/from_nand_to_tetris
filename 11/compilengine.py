@@ -5,12 +5,8 @@ Created on Sat Aug  5 09:23:47 2017
 @author: John Lee
 """
 class CompileEngine:
-    symbols = set(['{','}','(',')','[',']','.',',',';','+','-',\
-               '*','/','&','|','<','>','=','~'])
-    keywords = set(['class','constructor','function','method','field','static',\
-                'var','int','char','boolean','void','true','false','null',\
-                'this','let','do','if','else','while','return'])
-    operations = set(['+','-','*','/','&','|','<','>','='])
+    operations = {'+':'add', '-':'sub', '*':'call Math.multiply 2',\
+    '/':'call Math.divide 2', '&':'and', '|':'or', '<':'lt','>':'gt','=':'eq'}
     def __init__(self,tokens,fhand):
         self.classname = ''
         self.tokens = tokens
@@ -25,24 +21,6 @@ class CompileEngine:
         
     def cur():
         return self.tokens[self.index]
-    
-    def tokenize(self,count):
-        i = 0     
-        while i < count:
-            word = self.cur()
-            if word in self.keywords:
-                self.fhand.write('<keyword>{}</keyword>\n'.format(word))           
-            elif word in self.symbols:
-                self.fhand.write('<symbol>{}</symbol>\n'.format(word))
-            elif word.startswith('"'):
-                word = word.strip('"')
-                self.fhand.write('<stringConstant>{}</stringConstant>\n'.format(word))
-            elif word.isnumeric():
-                self.fhand.write('<integerConstant>{}</integerConstant>\n'.format(word))
-            else:
-                self.fhand.write('<identifier>{}</identifier>\n'.format(word))
-            self.index += 1
-            i += 1
             
     def compileClass(self):
         if self.get() == 'class':
@@ -132,112 +110,158 @@ class CompileEngine:
                 self.compilewhile()
             else:
                 self.compilereturn()
+                
+    def compilepp(self, name, action):                                     # compile push and pop
+        varinfo = self.subtable.get(name, self.classtable.get(name,self.classname))
+        if varinfo[2] == 'field':
+            self.fhand.write('{0} {1} {2}'.format(action, this, varinfo[3]))
+        else:
+            self.fhand.write('{0} {1} {2}'.format(action, varinfo[2], varinfo[3]))
         
     def compilelet(self):
         self.index += 1
-        identifier = self.get()
-        varinfo = self.subtable.get(identifier, self.classtable.get(identifier,classname))
-        if varinfo[1] == 'field'
-        words = 'push {} {}
+        identifier = self.get()            
         if self.cur() == '[':
+            self.compilepp(identifier,'push')
             self.index += 1
             self.compilexp()
+            self.fhand.write('add\n')
+            self.index += 2
+            self.compilexp()
+            self.fhand.write('pop temp 0\npop pointer 1\npush temp 0\npop that 0\n')
+        else:
             self.index += 1
+            self.compilexp()
+            self.compilepp(identifier,'pop')
         self.index += 1
-        self.compilexp()
-        self.index += 1
-        self.fhand.write('</letStatement>\n')
+
         
     def compiledo(self):
-        self.fhand.write('<doStatement>\n')
-        self.tokenize(2)
-        if self.cur() == '.':
-            self.tokenize(3)
-            self.compilexpl()
-            self.tokenize(1)
-        elif self.cur() == '(':
-            self.tokenize(1)
-            self.compilexpl()
-            self.tokenize(1)     
-        self.tokenize(1)
-        self.fhand.write('</doStatement>\n')
+        self.index += 1
+        identifier = self.get()  
+        self.subroutinecall()
+        self.fhand.write('pop temp 0\n')
+        self.index += 1   
         
     def compileif(self):
-        self.fhand.write('<ifStatement>\n')
-        self.tokenize(2)
+        _labelif = 'ifexp.{}'.format(self.index)
+        _labelelse = 'elsexp.{}'.format(self.index)
+        self.index += 2
         self.compilexp()
-        self.tokenize(2)
+        self.fhand.write('neg\nif-goto {}'.format(_labelif))
+        self.index += 2
         self.compilestm()
-        self.tokenize(1)
+        self.index += 1
+        self.fhand.write('goto {0}\nlabel {1}\n'.format(_labelelse, _labelif))
         if self.cur() == 'else':
-            self.tokenize(2)
+            self.index += 2
             self.compilestm()
-            self.tokenize(1)
-        self.fhand.write('</ifStatement>\n')
+            self.index += 1
+        self.fhand.write('label {}\n'.format(_labelelse)
         
     def compilewhile(self):
-        self.fhand.write('<whileStatement>\n')
-        self.tokenize(2)
+        _labelyes = 'while.{}'.format(self.index)
+        _labelno = 'cycle.{}'.format(self.index)
+        self.index += 2
         self.compilexp()
-        self.tokenize(2)
+        self.index += 2
+        self.fhand.write('label {0}\nneg\nif-goto {1}'.format(_labelno, _labelyes))
         self.compilestm()
-        self.tokenize(1)
-        self.fhand.write('</whileStatement>\n')
+        self.index += 1
+        self.fhand.write('goto {}\nlabel {}\n'.format(_labelno, _labelyes))
         
     def compilereturn(self):
-        self.fhand.write('<returnStatement>\n')
-        self.tokenize(1)
+        self.index += 1
         if self.cur() != ';':
             self.compilexp()
-        self.tokenize(1)
-        self.fhand.write('</returnStatement>\n')
+        else:
+            self.fhand.write('push constant 0')
+        self.index += 1
         
     def compilexp(self):
-        self.fhand.write('<expression>\n')
         self.compileterm()
-        while self.cur() in self.operations:
-            self.tokenize(1)
+        op = self.get()
+        while op in self.operations: 
             self.compileterm()
-        self.fhand.write('</expression>\n')
+            self.fhand.write(self.operations.get(op)+'\n')
 
-    def isconstant(self):
+    def writeconstant(self):
         word = self.cur()
-        if word.isnumeric() or word.startswith('"') or\
-        word in {'true','false','null','this'}:
-            return True
-        return False
+        if word.isnumeric():
+            self.fhand.write('push constant {}\n'.format(word))
+        elif word.startswith('"'):
+            word = word.strip('"')
+            self.fhand.write('push constant {}\ncall String.new 1\n'.format(len(word)))
+            i=0  
+            while i< len(word)
+                self.fhand.write('push constant {}\n'.format(ord(word[i])))
+                self.fhand.write('call String.appendChar 2\n')        
+        elif word in {'false','null'}:
+            self.fhand.write('push constant 0\n')
+        elif word == 'true':
+            self.fhand.write('push constant 1\nneg\n')
+        elif word == 'this':
+            self.fhand.write('push pointer 0\n')
+        else:
+            return False
+        return True
+    
     def compileterm(self):
-        self.fhand.write('<term>\n')
-        if self.isconstant():
-            self.tokenize(1)
+        if self.writeconstant():
+            return
         elif self.cur() in {'~','-'}:
-            self.tokenize(1)
+            if self.cur() == '~':
+                _op = 'not\n'
+            else:
+                _op = 'neg\n'
             self.compileterm()
+            self.fhand.write(_op)
         elif self.cur() == '(':
-            self.tokenize(1)
+            self.index += 1
             self.compilexp()
-            self.tokenize(1)
+            self.index += 1
         elif self.cur()[0].isalpha() or self.cur()[0] == '_':
-            self.tokenize(1)
+            identifier = self.get() 
             if self.cur() == '[':
-                self.tokenize(1)
+                self.compilepp(identifier,'push')
+                self.index += 1
                 self.compilexp()
-                self.tokenize(1)
-            elif self.cur() == '.':
-                self.tokenize(3)
-                self.compilexpl()
-                self.tokenize(1)
-            elif self.cur() == '(':
-                self.tokenize(1)
-                self.compilexpl()
-                self.tokenize(1)            
-        self.fhand.write('</term>\n')
+                self.fhand.write('add\n')
+                self.index += 1
+                self.fhand.write('pop pointer 1\n\npush that 0\n')
+            else:
+                self.index -= 1
+                self.subroutinecall()
+
+
+    def subroutinecall(self):
+        identifier = self.get()
+        _ismethod = 1
+        if self.cur() == '.':
+            if identifier in self.subtable:
+                _class = self.subtable.get(identifier)[1]
+            elif identifier in self.classtable:
+                _class = self.classtable.get(identifier)[1]
+            else:
+                _class = identifier
+                _ismethod = 0
+            self.index += 1
+            _sub = self.get()
+        elif self.cur() == '(':
+            _class = self.classname
+            _sub = identifier
+        self.index += 1
+        _nargs = self.compilexpl() + _ismethod
+        self.fhand.write('call {0}.{1} {2}\n'.format(_class, _sub, _nargs))
+        self.index += 1 
         
     def compilexpl(self):
-        self.fhand.write('<expressionList>\n')
+        _nargs = 0
         if self.cur() != ')':
             self.compilexp()
+            _nargs += 1
             while self.cur() == ',':
-                self.tokenize(1)
+                self.index += 1
                 self.compilexp()
-        self.fhand.write('</expressionList>\n')
+                nargs += 1
+        return _nargs
