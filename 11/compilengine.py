@@ -11,15 +11,20 @@ class CompileEngine:
                 'var','int','char','boolean','void','true','false','null',\
                 'this','let','do','if','else','while','return'])
     operations = set(['+','-','*','/','&','|','<','>','='])
-    def __init__(self,words,fhand):
-        self.words = words
+    def __init__(self,tokens,fhand):
+        self.classname = ''
+        self.tokens = tokens
         self.index = 0
         self.classtable = dict()
         self.subtable = dict()
         self.fhand = fhand
         
-    def get(self, i):
-        return self.words[self.index + i]
+    def get(self):
+        self.index += 1
+        return self.tokens[self.index-1]
+        
+    def cur():
+        return self.tokens[self.index]
     
     def tokenize(self,count):
         i = 0     
@@ -40,97 +45,107 @@ class CompileEngine:
             i += 1
             
     def compileClass(self):
-        self.fhand.write('<class>\n')
-        self.tokenize(3)    
+        if self.get() == 'class':
+            self.index += 1
+        self.classname = self.get()
+        self.index += 1    
         self.compilecvd()
         self.compilesub()
-        self.tokenize(1)
-        self.fhand.write('</class>\n')
     
         
     def compilecvd(self):
-        cvidx = 0
-        while self.get(0) in {'field','static'}:
-            vkind = self.get(0)
-            vtype = self.get(1)
-            self.classtable[self.get(2)] = (vtype, vkind, cvidx)
+        vidx = 0
+        vkind = self.get()
+        while vkind in {'field','static'}:                            #field int wall;
+            vtype = self.get()
+            self.classtable[self.get()] = (vtype, vkind, cvidx)
             cvidx += 1
-            self.index += 3
-            while self.get(0) == ',':
-                self.classtable[self.get(1)] = (vtype, vkind, cvidx)
-                cvidx += 1
-                self.idx += 2
-            self.index += 1
-            
-    def compilesub(self):
-        while self.get(0) in {'constructor','function','method'}:
-            subroutine = self.get(0)
-
-            self.tokenize(4)
-            nargs = self.compilepml()
+            while self.get() == ',':
+                self.classtable[self.get()] = (vtype, vkind, cvidx)
+                vidx += 1
+            vkind = self.get()
+        self.index += 1
+        
+    def compilesub(self):                                               # method void dispose() {
+        self.subtable = dict()
+        subroutine = self.get()
+        ismethod = 0
+        while subroutine in {'constructor','function','method'}:               
+            self.index += 1                                            #void
+            function = self.classname + self.get()                      # dispose
+            if subroutine == 'method':
+                self.subtable['this'] = (self.classname,'argument',0)
+                ismethod = 1
+            self.index += 1                                            # (
+            nargs = self.compilepml(ismethod)
+            self.fhand.write('function {0} {1}\n'.format(function, nargs))
             if subroutine == 'constructor':
-                self.fhand.write('push {}'.format(nargs))
-                self.fhand.write('call Memory.alloc 1')
-            self.tokenize(1)
+                self.fhand.write('push constant {}\n'.format(nargs))
+                self.fhand.write('call Memory.alloc 1\npop pointer 0\n')
+            self.index += 2                                    # ){
             self.compilesbd()
-            self.fhand.write('</subroutineDec>\n')
+            self.index += 1                                    # }
+            subroutine = self.get()
             
-    def compilepml(self):                         # compile parameterlist
-        argidx = 0
-        nargs = 0
-        if self.get(0) != ')':
-            self.subtable[self.get(1)] = (self.get(0), 'argument', argidx)
-            self.index += 2
-            nargs +=1
-            while self.get(0) == ',':
-                self.subtable[self.get(1)] = (self.get(1), 'argument', argidx)
-                self.index += 3
-                nargs +=1
-        return nargs
+    def compilepml(self,ismtd):                         # compile parameterlist
+        argidx = ismtd
+        vtype = self.get()
+        if vtype != ')':
+            self.subtable[self.get()] = (vtype, 'argument', argidx)
+            argidx +=1
+            vtype = self.get()
+            while vtype == ',':
+                self.subtable[self.get()] = (vtype, 'argument', argidx)
+                vtype = self.get()
+                argidx +=1
+        return argidx
         
                 
     def compilesbd(self):
-        self.fhand.write('<subroutineBody>\n')
-        self.tokenize(1)
-        self.compilevar()        
+        self.compilevar()
+        
         self.compilestm()
-        self.tokenize(1)        
-        self.fhand.write('</subroutineBody>\n')
         
     def compilevar(self):
-        while self.cur() == 'var':
-            self.fhand.write('<varDec>\n')
-            self.tokenize(3)
-            while self.cur() == ',':
-                self.tokenize(2)
-            self.tokenize(1)
-            self.fhand.write('</varDec>\n')
-            
+        vidx = 0
+        vkind = self.get()
+        while vkind == 'var':                            #field int wall;
+            vtype = self.get()
+            self.subtable[self.get()] = (vtype, 'var', cvidx)
+            cvidx += 1
+            while self.get() == ',':
+                self.classtable[self.get()] = (vtype, 'var', cvidx)
+                vidx += 1
+            vkind = self.get()
+        self.index += 1
+        
     def compilestm(self):
-        self.fhand.write('<statements>\n')
-        while self.cur() in {'let','do','if','while','return'}:
-            if self.cur() == 'let':
+        stm = self.get()
+        while stm in {'let','do','if','while','return'}:
+            if stm == 'let':
                 self.compilelet()
-            elif self.cur() == 'do':
+            elif stm == 'do':
                 self.compiledo()
-            elif self.cur() == 'if':
+            elif stm == 'if':
                 self.compileif()
-            elif self.cur() == 'while':
+            elif stm == 'while':
                 self.compilewhile()
-            elif self.cur() == 'return':
+            else:
                 self.compilereturn()
-        self.fhand.write('</statements>\n')
         
     def compilelet(self):
-        self.fhand.write('<letStatement>\n')
-        self.tokenize(2)
+        self.index += 1
+        identifier = self.get()
+        varinfo = self.subtable.get(identifier, self.classtable.get(identifier,classname))
+        if varinfo[1] == 'field'
+        words = 'push {} {}
         if self.cur() == '[':
-            self.tokenize(1)
+            self.index += 1
             self.compilexp()
-            self.tokenize(1)
-        self.tokenize(1)
+            self.index += 1
+        self.index += 1
         self.compilexp()
-        self.tokenize(1)
+        self.index += 1
         self.fhand.write('</letStatement>\n')
         
     def compiledo(self):

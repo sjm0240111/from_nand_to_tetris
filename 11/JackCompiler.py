@@ -38,26 +38,26 @@ def tokenizer(text):
     text = re.sub(comment, ' ',text)               # remove comment
     _roughlist = text.split('"')
     i = 1
-    wordlist = list()
+    tokens = list()
     while i < len(_roughlist):
         _subtext = re.sub(symbolptn, symbolrpl, _roughlist[i-1])       # separate elements
         _subtext = _subtext.strip() 
-        wordlist = wordlist + re.split(r'\s+', _subtext) 
-        wordlist.append('"'+_roughlist[i])
+        tokens = tokens + re.split(r'\s+', _subtext) 
+        tokens.append('"'+_roughlist[i])
         i = i+2
     _subtext = re.sub(symbolptn, symbolrpl, _roughlist[i-1])      
     _subtext = _subtext.strip() 
-    wordlist = wordlist + re.split(r'\s+', _subtext) 
-    return wordlist     
+    tokens = tokens + re.split(r'\s+', _subtext) 
+    return tokens     
 
 def compilefile(jackfile):
     with open(jackfile, 'r') as myfile:
         text = myfile.read()
-    wordlist = tokenizer(text)
+    tokens = tokenizer(text)
     namevm = re.sub(r'.jack','.vm',jackfile)
     fout = open(namevm, 'w')
-    jackobj = CompileEngine(wordlist,fout)
-    #jackobj.tokenize(len(wordlist))
+    jackobj = CompileEngine(tokens,fout)
+    #jackobj.tokenize(len(tokens))
     jackobj.compileClass()
     fout.close()
             
