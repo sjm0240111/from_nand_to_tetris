@@ -44,14 +44,14 @@ call Array.new 1
 pop local 0
 push constant 0
 pop local 2
-label cycle.48
+label WHILE_EXP0
 push local 2
 push local 1
 lt
 not
-if-goto while.48
-push local 0
+if-goto WHILE_END0
 push local 2
+push local 0
 add
 push constant 16
 call String.new 1
@@ -93,11 +93,10 @@ pop pointer 1
 push temp 0
 pop that 0
 push local 3
-push local 0
 push local 2
+push local 0
 add
 pop pointer 1
-
 push that 0
 add
 pop local 3
@@ -105,8 +104,8 @@ push local 2
 push constant 1
 add
 pop local 2
-goto cycle.48
-label while.48
+goto WHILE_EXP0
+label WHILE_END0
 push constant 15
 call String.new 1
 push constant 84
