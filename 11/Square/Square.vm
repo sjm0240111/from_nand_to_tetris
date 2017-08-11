@@ -72,72 +72,49 @@ add
 push constant 510
 lt
 and
-neg
-if-goto ifexp.144d
+not
+if-goto ifexp.144
+push pointer 0
+call Square.erase 1
+pop temp 0
+push this 2
 push constant 2
 add
-push q u
-add
-add
-add
-push q u
-add
-add
-push q u
-add
+pop this 2
 push pointer 0
-call Square.decSize 1
-add
-push pointer 0
+call Square.draw 1
+pop temp 0
+label ifexp.144
+push constant 0
+return
+function Square.decSize 0
+push argument 0
+pop pointer 0
 push this 2
 push constant 2
 gt
-gt
-push q u
-gt
-gt
-push q u
-gt
-gt
+not
+if-goto ifexp.194
+push pointer 0
+call Square.erase 1
+pop temp 0
 push this 2
-gt
 push constant 2
-gt
-push q u
-gt
-gt
-gt
-push q u
-gt
-gt
-push q u
-gt
+sub
+pop this 2
 push pointer 0
-call Square.moveUp 1
-gt
-push pointer 0
+call Square.draw 1
+pop temp 0
+label ifexp.194
+push constant 0
+return
+function Square.moveUp 0
+push argument 0
+pop pointer 0
 push this 1
 push constant 1
 gt
-gt
-push q u
-gt
-gt
-push pointer 0
-push constant 0
-call Square.setColor 2
-gt
-push q u
-gt
-gt
-push pointer 0
-push this 0
-push this 1
-push this 2
-add
-sh constant 1
-gt
-neg
+not
 if-goto ifexp.228
 push constant 0
 call Screen.setColor 1
@@ -185,7 +162,7 @@ push this 2
 add
 push constant 254
 lt
-neg
+not
 if-goto ifexp.310
 push constant 0
 call Screen.setColor 1
@@ -231,7 +208,7 @@ pop pointer 0
 push this 0
 push constant 1
 gt
-neg
+not
 if-goto ifexp.396
 push constant 0
 call Screen.setColor 1
@@ -279,7 +256,7 @@ push this 2
 add
 push constant 510
 lt
-neg
+not
 if-goto ifexp.478
 push constant 0
 call Screen.setColor 1

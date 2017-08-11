@@ -17,34 +17,32 @@ class CompileEngine:
         self.nfield = 0
         
     def get(self):
-        try:
-            self.index += 1
-            return self.tokens[self.index-1]
-        except:
-            return "OK"
+        self.index += 1
+        return self.tokens[self.index-1]
         
     def cur(self):
-        try:
-            return self.tokens[self.index]
-        except:
-            return "OK"
+        return self.tokens[self.index]
             
     def compileClass(self):
         if not self.get() == 'class':
             return
         self.classname = self.get()
-        print(self.classname)
+        #print(self.classname)
         self.index += 1    
         self.compilecvd()
         self.compilesub()
+        self.index += 1
+        #print(len(self.tokens))
+        #print(self.index)
+        if self.index == len(self.tokens):
+            print('compile successfully!')
     
     def compilecvd(self):
         _fidx = 0
         _sidx = 0
         _vkind = self.cur()
         while _vkind in {'field','static'}:               #field int wall,wall2;
-            if _vkind == 'field':
-                
+            if _vkind == 'field': 
                 self.index += 1
                 _vtype = self.get()                                     # int
                 self.classtable[self.get()] = (_vtype, 'this', _fidx)   # wall
@@ -66,21 +64,22 @@ class CompileEngine:
         #print(_vkind)
         
     def compilesub(self):                                              # method void dispose() { }       
-        _subroutine = self.get()
+        _subroutine = self.cur()
         print(_subroutine)
         while _subroutine in {'constructor','function','method'}:
             self.subtable = dict()
             _ismethod = 0
-            self.index += 1                                            #void
+            self.index += 2                                            # jump method void
             function = self.classname + '.' +self.get()                # dispose
-            print(function)
+            #print(function)
             if _subroutine == 'method':
                 self.subtable['this'] = (self.classname,'argument',0)
                 _ismethod = 1
             self.index += 1                                            # (
             self.compilepml(_ismethod)               # compile arguments
+            
             self.index += 2                                  # ){
-            print(self.cur())
+            #print(self.cur())
             _nlcls = self.compilevar()                       # compile local variables
             self.fhand.write('function {0} {1}\n'.format(function, _nlcls))
             if _subroutine == 'constructor':
@@ -88,30 +87,24 @@ class CompileEngine:
                 self.fhand.write('call Memory.alloc 1\npop pointer 0\n')
             if _subroutine == 'method':
                 self.fhand.write('push argument 0\npop pointer 0\n')
+            
             self.compilestm()                                # compile statements
             self.index += 1                                  # }
-            _subroutine = self.get()
-            print(self.subtable)
+            _subroutine = self.cur()
+            #print(self.subtable)
             
     def compilepml(self,ismtd):                         # compile parameterlist
-        argidx = ismtd
+        _argidx = ismtd
         _vtype = self.cur()
         if _vtype != ')':
             self.index += 1
-            self.subtable[self.get()] = (_vtype, 'argument', argidx)
-            argidx +=1  
+            self.subtable[self.get()] = (_vtype, 'argument', _argidx)
+            _argidx +=1  
             while self.cur() == ',':
                 self.index += 1
                 _vtype = self.get()
-                self.subtable[self.get()] = (_vtype, 'argument', argidx)
-                argidx +=1
-        return argidx
-        
-                
-#    def compilesbd(self, function):
-#        _nlcls = self.compilevar()
-#        self.fhand.write('function {0} {1}\n'.format(function, _nlcls))
-#        self.compilestm()
+                self.subtable[self.get()] = (_vtype, 'argument', _argidx)
+                _argidx +=1                        
         
     def compilevar(self):
         _vidx = 0
@@ -131,9 +124,7 @@ class CompileEngine:
         
     def compilestm(self):
         _stm = self.cur()
-        
         while _stm in {'let','do','if','while','return'}:
-            
             if _stm == 'let':
                 self.compilelet()
             elif _stm == 'do':
@@ -145,7 +136,7 @@ class CompileEngine:
             else:
                 self.compilereturn()
             _stm = self.cur()
-            print(_stm)
+            #print(_stm)
                 
     def compilepp(self, name, action):                                     # compile push and pop
         varinfo = self.subtable.get(name, self.classtable.get(name,self.classname))
@@ -181,7 +172,7 @@ class CompileEngine:
         _labelelse = 'elsexp.{}'.format(self.index)
         self.index += 2
         self.compilexp()
-        self.fhand.write('neg\nif-goto {}\n'.format(_labelif))
+        self.fhand.write('not\nif-goto {}\n'.format(_labelif))
         self.index += 2
         self.compilestm()
         self.index += 1
@@ -214,7 +205,7 @@ class CompileEngine:
             self.fhand.write('push constant 0\n')
         self.fhand.write('return\n')
         self.index += 1
-        print('returned{}'.format(self.cur()))
+        #print('returned{}'.format(self.cur()))
         
     def compilexp(self):
         self.compileterm()
@@ -311,6 +302,4 @@ class CompileEngine:
                 self.index += 1
                 self.compilexp()
                 _nargs += 1
-        print('where')        
-        print(self.cur())
         return _nargs

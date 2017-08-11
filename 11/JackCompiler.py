@@ -61,4 +61,4 @@ def compilefile(jackfile):
     jackobj.compileClass()
     fout.close()
             
-#main(sys.argv[1])  
+main(sys.argv[1])  

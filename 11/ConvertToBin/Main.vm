@@ -1,0 +1,106 @@
+function Main.main 1
+push constant 8001
+push constant 16
+push constant 1
+neg
+call Main.fillMemory 3
+pop temp 0
+push constant 8000
+call Memory.peek 1
+pop local 0
+push local 0
+call Main.convert 1
+pop temp 0
+push constant 0
+return
+function Main.convert 3
+push constant 0
+not
+pop local 2
+label cycle.70
+push local 2
+not
+if-goto while.70
+push local 1
+push constant 1
+add
+pop local 1
+push local 0
+call Main.nextMask 1
+pop local 0
+push local 1
+push constant 16
+gt
+not
+not
+if-goto ifexp.92
+push argument 0
+push local 0
+and
+push constant 0
+eq
+not
+not
+if-goto ifexp.102
+push constant 8000
+push local 1
+add
+push constant 1
+call Memory.poke 2
+pop temp 0
+goto elsexp.102
+label ifexp.102
+push constant 8000
+push local 1
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+label elsexp.102
+goto elsexp.92
+label ifexp.92
+push constant 0
+pop local 2
+label elsexp.92
+goto cycle.70
+label while.70
+push constant 0
+return
+function Main.nextMask 0
+push argument 0
+push constant 0
+eq
+not
+if-goto ifexp.165
+push constant 1
+return
+goto elsexp.165
+label ifexp.165
+push argument 0
+push constant 2
+call Math.multiply 2
+return
+label elsexp.165
+function Main.fillMemory 0
+label cycle.199
+push argument 1
+push constant 0
+gt
+not
+if-goto while.199
+push argument 0
+push argument 2
+call Memory.poke 2
+pop temp 0
+push argument 1
+push constant 1
+sub
+pop argument 1
+push argument 0
+push constant 1
+add
+pop argument 0
+goto cycle.199
+label while.199
+push constant 0
+return
