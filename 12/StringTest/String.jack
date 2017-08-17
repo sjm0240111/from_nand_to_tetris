@@ -31,7 +31,7 @@ class String {
     /** Disposes this string. */
     method void dispose() {
         if (max > 0) {
-            do Array.dispose(str);
+            do Memory.deAlloc(str);
         }
         do Memory.deAlloc(this);
         return;

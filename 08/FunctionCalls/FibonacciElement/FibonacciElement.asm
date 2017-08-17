@@ -92,13 +92,13 @@ D=M
 A=A-1
 D=M-D
 M=-1
-@LT.Main.fibonacci.14
+@LT.Main.vm.14
 D;JLT
 @R0
 A=M
 A=A-1
 M=0
-(LT.Main.fibonacci.14)
+(LT.Main.vm.14)
 @R0
 M=M-1
 A=M
