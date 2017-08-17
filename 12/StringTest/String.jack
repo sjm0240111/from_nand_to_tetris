@@ -18,7 +18,7 @@ class String {
      *  and initial length of 0. */
     constructor String new(int maxLength) {
         if (maxLength < 0) {
-            do Sys.error(0);              // need error message
+            do Sys.error(0);
         } 
         if (maxLength > 0) {
             let str = Array.new(maxLength);
@@ -31,7 +31,7 @@ class String {
     /** Disposes this string. */
     method void dispose() {
         if (max > 0) {
-            do Array.dispose(str);         // may use Memory.deAlloc
+            do Array.dispose(str);
         }
         do Memory.deAlloc(this);
         return;
@@ -58,17 +58,18 @@ class String {
         if (max > length) {
             let str[length] = c;
             let length = length + 1;
+            return this;
         }
         else {
-            do Sys.error(1);          // need error message
+            do Sys.error(1);
+            return this;
         }
-        return this;
     }
 
     /** Erases the last character from this string. */
     method void eraseLastChar() {
         let str[length] = 0;
-        let length = length - 1;       // may need to check conditions
+        let length = length - 1;
         return;
     }
 
@@ -85,8 +86,8 @@ class String {
             let i= i+1;
             let neg = -1;
         }
-        while ( i < length) {  
-            let value = (value * 10) + (str[i] - 48);   // may need to check chars
+        while ( i < length) {
+            let value = (value * 10) + (str[i] - 48);
             let i = i+1;
         }
         return value*neg;

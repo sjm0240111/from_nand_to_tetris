@@ -1,0 +1,14 @@
+function Main.main 0
+push constant 99
+neg
+push constant 99
+neg
+push constant 10
+call Math.divide 2
+push constant 10
+call Math.multiply 2
+sub
+call Output.printInt 1
+pop temp 0
+push constant 0
+return
