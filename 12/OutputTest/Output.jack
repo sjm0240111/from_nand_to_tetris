@@ -240,9 +240,9 @@ class Output {
     /** Displays the given integer starting at the cursor location,
      *  and advances the cursor appropriately. */
     function void printInt(int i) {
-        var string str;
+        var String str;
         let str = String.new(10);
-        do str.setInt(22);
+        do str.setInt(i);
         do Output.printString(str);
         do str.dispose();
         return; 
@@ -272,7 +272,7 @@ class Output {
         else {
             let column = column -1;
         }
-        do Output.printChar(32);
+        do Output.moveCursor(row,column);
         return;
     }
 }
