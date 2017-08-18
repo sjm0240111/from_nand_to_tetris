@@ -180,7 +180,7 @@ class Output {
 
     /** Moves the cursor to the j-th column of the i-th row,
      *  and erases the character displayed there. */
-    function void moveCursor(int i, int j) {
+    function void moveCursor(int i, int j) {  // may need to check condition
         let row = i;
         let column = j;
         do Output.printChar(32);
@@ -191,7 +191,7 @@ class Output {
 
     /** Displays the given character at the cursor location,
      *  and advances the cursor one column forward. */
-    function void printChar(char c) {
+    function void printChar(char c) {      // may need to check condition
         var int addr;
         var Array map;
         var int i;

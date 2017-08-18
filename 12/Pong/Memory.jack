@@ -1,0 +1,67 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Memory.jack
+
+/**
+ * This library provides two services: direct access to the computer's main
+ * memory (RAM), and allocation and recycling of memory blocks. The Hack RAM
+ * consists of 32,768 words, each holding a 16-bit binary number.
+ */ 
+class Memory {
+    static int addr;
+    static int freeList;
+    /** Initializes the class. */
+    function void init() {
+        let addr = 0;
+        let freeList = 2048;
+        let freeList[0] = 14336;  // length
+        let freeList[1] = null;   // next
+        return;
+    }
+
+    /** Returns the RAM value at the given address. */
+    function int peek(int address) {
+        return addr[address];
+    }
+
+    /** Sets the RAM value at the given address to the given value. */
+    function void poke(int address, int value) {
+        let addr[address] = value;
+        return;
+    }
+
+    /** Finds an available RAM block of the given size and returns
+     *  a reference to its base address. */
+    function int alloc(int size) {
+        var int fit;
+        var int search;
+        var int temp;
+        let fit = 0;
+        let search = freeList;
+        let temp = 14337;
+        while (search>0) {
+            if ((search[0]>(size+3))&(search[0]<temp)) {
+                let fit = search;
+                let temp = search[0];
+            }
+            let search = search[1];
+            
+        }
+        if (temp = 14337) {
+            do Output.printString("no appropiate memory!");
+            do Sys.error(2);  // message 
+        }
+        let fit[0] = (temp - size) - 1; 
+        let fit[(temp - size) - 1] = size + 1;
+        return fit+temp-size;
+    }
+
+    /** De-allocates the given object (cast as an array) by making
+     *  it available for future allocations. */
+    function void deAlloc(Array o) {
+        let o[0] = freeList;
+        let freeList = o-1;
+        return;
+    }    
+}

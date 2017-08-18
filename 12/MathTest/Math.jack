@@ -68,18 +68,29 @@ class Math {
      */
     function int divide(int x, int y) {
         var int temp;
-        if ((x>0) = (y<0)) {
-            return -(Math.divide(Math.abs(x),Math.abs(y)));
+        var int sign;
+        let sign = 1;
+        if (x<0) {
+            let sign = -1;
+            let x = -x;
+        }
+        if (y<0) {
+            let sign = -sign;
+            let y = -y;
         }
         if (x < y) {
             return 0;
         }
         let temp = Math.divide(x,y+y);
         let temp = temp + temp;
-        if ((x-y)<(temp*y)) {
-            return temp;
+        if (~((x-y)<(temp*y))) {
+            let temp = temp + 1;
         }
-            return temp+1;
+        if (sign = 1) {
+            return temp;
+        } else {
+            return -temp;
+        }
     }
 
     /** Returns the integer part of the square root of x. */

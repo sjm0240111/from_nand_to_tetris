@@ -69,28 +69,34 @@ class Math {
     function int divide(int x, int y) {
         var int temp;
         var int sign;
+        var int result;
         let sign = 1;
-        if (x<0) {
-            let sign = -1;
-            let x = -x;
-        }
-        if (y<0) {
-            let sign = -sign;
-            let y = -y;
-        }
+        // if (x<0) {
+            // let sign = -1;
+            // let x = -x;
+        // }
+        // if (y<0) {
+            // let sign = -sign;
+            // let y = -y;
+        // }
         if (x < y) {
             return 0;
         }
-        let temp = Math.divide(x,y+y);
-        let temp = temp + temp;
-        if (~((x-y)<(temp*y))) {
-            let temp = temp + 1;
+        let temp = 0;//Math.divide(x,y+y);
+        let result = temp + temp;
+        if ((x-y)<(result*y)) {
+            return result;
+        } 
+        else {
+            return result + 1；
         }
-        if (sign = 1) {
-            return temp;
-        } else {
-            return -temp;
-        }
+        // if (sign = 1) {
+            // return result;
+        // } 
+        // else {
+            // return -result;
+        // }
+        //return;
     }
 
     /** Returns the integer part of the square root of x. */
