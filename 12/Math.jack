@@ -11,23 +11,16 @@ class Math {
     static Array bitPower;
     /** Initializes the library. */
     function void init() {
+        var int i;
+        var int value;
         let bitPower = Array.new(16);
-        let bitPower[0] = 1;
-        let bitPower[1] = 2;
-        let bitPower[2] = 4;
-        let bitPower[3] = 8;        
-        let bitPower[4] = 16;
-        let bitPower[5] = 32;        
-        let bitPower[6] = 64;
-        let bitPower[7] = 128;        
-        let bitPower[8] = 256;
-        let bitPower[9] = 512;        
-        let bitPower[10] = 1024;
-        let bitPower[11] = 2048;
-        let bitPower[12] = 4096;
-        let bitPower[13] = 8192;
-        let bitPower[14] = 16384;
-        let bitPower[15] = -32767-1;
+        let i = 0;
+        let value = 1;
+        while (i < 16) {
+            let bitPower[i] = value;
+            let value = value + value;
+            let i = i + 1;
+        }
         return;
     }
 
